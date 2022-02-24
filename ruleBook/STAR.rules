@@ -122,5 +122,6 @@ rule RSEMens:
 	mkdir -p {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/RSEM_ENS
 	mv -f {wildcards.sample}_ENS.genes.results {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/RSEM_ENS/{wildcards.sample}.rsem_ENS.genes.results
 	mv -f {wildcards.sample}_ENS.isoforms.results {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/RSEM_ENS/{wildcards.sample}.rsem_ENS.isoforms.results
+	touch {wildcards.subject}/{TIME}/Actionable/rsem.done
 	################################
 	"""
