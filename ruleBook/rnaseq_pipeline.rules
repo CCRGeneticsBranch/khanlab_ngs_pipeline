@@ -5,7 +5,7 @@ SUB_RNASEQ=set()
 SUB_FUSION={}
 SUB_QC={}
 SAM_RNASEQ={}
-
+SUB_RSEM_R={}
 if 'RNASeq' in config:
 	for subject,samples in config['RNASeq'].items():
 #		SUB_RNASEQ.append(subject)
@@ -58,6 +58,7 @@ if 'RNASeq' in config:
 		TARGET_R  += ["{subject}/{TIME}/{sample}/calls/{sample}.HC_RNASeq.raw.vcf".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
 		SUB_FUSION[subject] = ["{subject}/{TIME}/{sample}/fusion/{sample}.actionable.fusion.txt".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
 		SUB_QC[subject]     = ["{subject}/{TIME}/{sample}/qc/{sample}.RnaSeqQC.txt".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
+		SUB_RSEM_R[subject] = ["{subject}/{TIME}/{sample}/RSEM_ENS/{sample}.rsem_ENS.genes.results".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
 		if subject in SUBJECT_VCFS:
 			SUBJECT_VCFS[subject] += ["{subject}/{TIME}/{sample}/calls/{sample}.HC_RNASeq.snpEff.txt".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
 		else:
@@ -208,21 +209,23 @@ rule Actionable_fusion:
 	#######################
 	"""
 
+
 #############
 # fusion_annotation
 #############
 rule fusion_annotation:
 	input:
-		"{subject}/{TIME}/Actionable/{subject}.fusion.actionable.txt"
+		lambda wildcards: SUB_RSEM_R[wildcards.subject],
+		"{subject}/{TIME}/Actionable/{subject}.fusion.actionable.txt",
 	output:
-		"{subject}/{TIME}/{subject}/db/{subject}.fusion.txt"
+		"{subject}/{TIME}/{subject}/db/{subject}.fusion.txt",
 	params:
 		rulename = "fusion_annotation",
 		work_dir =  WORK_DIR,
 		image_file = config["fusion_annotation"],
 		pfam_dir = config["pfam_path"],
 		genome_fasta = config["reference"],
-		batch    = config[config['host']]["job_default"],
+		batch    = config[config['host']]["job_fusioncatch"],
 		FA_path	= config["FA_path"],
 		gencode_version = 37
 

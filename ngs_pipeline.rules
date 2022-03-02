@@ -326,7 +326,6 @@ onstart:
 	for subject in sorted(PATIENTS):
 		diagnosis =config['Diagnosis'][SUBJECT_TO_SAMPLE[subject][0]]
 		print (subject,diagnosis,TIME,sep='\t', end='\n',file=f)
-	
 	shell("for sub in {PATIENTS}; do rm -rf {WORK_DIR}/${{sub}}/{TIME}/successful.txt ; done")
 	shell("ssh -o StrictHostKeyChecking=no {HOST} \"echo 'ngs-pipeline version {VERSION} started on {PATIENTS} on {HOST}. Working Dir:  {WORK_DIR}' |mutt -s 'Khanlab ngs-pipeline Status' `whoami`@mail.nih.gov {MAIL} \"")
 onsuccess:

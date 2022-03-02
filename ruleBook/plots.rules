@@ -9,6 +9,17 @@ if 'subject' in config:
 				# any output which is desired on all libraries but Panel goes here, the list of panel captures should be maintained in the Panel_List in config file
 				TARGET    += [subject+"/"+TIME+"/qc/"+subject+".circos.png"]
 
+
+TARGET     += ["{subject}/{TIME}/{sample}/qc/{sample}.bwa.circos.png".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+for subject  in config['RNASeq'].keys():
+        for sample in config['RNASeq'][subject]:
+                if config['sample_captures'][sample] not in config['exclude_from_rnaseq']:
+                        TARGET      += [subject+"/"+TIME+"/"+sample+"/qc/"+sample+".star.circos.png"]
+
+
+
+
+
 LOH_Circos = {}
 for subject in config['subject'].keys():
     LOH_files = []
@@ -26,6 +37,27 @@ if 'RNASeq' in config:
             LOH_Circos[subject] = []
             LOH_Circos[subject] += ["{subject}/{TIME}/{sample}/qc/{sample}.star.loh".format(TIME=TIME, subject=SUB2RNA[s], sample=s) for s in SAM_RNASEQ[subject]]
 
+
+############
+# CircosLib
+############
+
+rule CircosLib:
+	input:
+		loh="{base}/{TIME}/{sample}/qc/{sample}.{aligner}.loh",
+		circos =NGS_PIPELINE + "/scripts/circosLib.R"
+	output: "{base}/{TIME}/{sample}/qc/{sample}.{aligner}.circos.png"
+	version: config["version_R"]
+	params:
+		rulename = "CircosLib",
+		batch    = config[config['host']]["job_covplot"]
+	shell: """
+	#######################
+	cp -f {input.loh} ${{LOCAL}}
+	module load R/{version}
+	R --vanilla --slave --silent --args ${{LOCAL}} {output} {wildcards.sample} <{input.circos}
+	#######################
+	"""
 
 ############
 # CoveragePlot

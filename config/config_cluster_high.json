@@ -51,7 +51,7 @@
 		"job_coverage"   : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=16G  --cpus-per-task=1",
 		"job_vcf2txt"    : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=01:00:00 --mem=02G  --cpus-per-task=2",
 		"job_hla"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=6:00:00 --mem=4G  --cpus-per-task=36",
-		"job_hlaminer"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=8:00:00 --mem=16G  --cpus-per-task=2",
+		"job_hlaminer"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=18:00:00 --mem=16G  --cpus-per-task=2",
 		"job_annovar"    : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=04:00:00 --mem=8G  --cpus-per-task=2",
 		"job_annot"      : "--mail-type=FAIL,TIME_LIMIT_90 --partition=quick,norm    --time=04:00:00 --mem=04G  --cpus-per-task=2",
 		"job_bamUtil"    : "--partition=norm,ccr --mail-type=FAIL,TIME_LIMIT_90 --time=08:00:00 --mem=6G  --cpus-per-task=2",
