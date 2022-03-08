@@ -69,7 +69,8 @@
 		"sureselect.exon.v6"	: "/data/Clinomics/Ref/khanlab/design/NIAID.sureselect.exon.v6.target.bed",
 		"mayo_v5_urt"           : "/data/Clinomics/Ref/khanlab/design/Agilent_S04380219_SureSelect_v5_utr_mayo.target.hg19.bed",
 		"panel_paed_v5_w5.1"	: "/data/Clinomics/Ref/khanlab/design/panel_PAED_V5_w5.1.target.hg19.bed",
-		"idt.xgen.exome.res"	: "/data/Clinomics/Ref/khanlab/design/IDT_xgen-exome-research-panel.target.hg19.bed"
+		"idt.xgen.exome.res"	: "/data/Clinomics/Ref/khanlab/design/IDT_xgen-exome-research-panel.target.hg19.bed",
+		"vcrome2.1_pkv2"	: "/data/Clinomics/Ref/khanlab/design/HG19_vcrome2.1_with_PKv1_and_PKv2_with_SNPtrace_addedchr.bed"
 	},
 	"hotspot_bed"		:{
 		"wholegenome"		: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed",
