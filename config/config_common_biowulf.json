@@ -105,7 +105,8 @@
 		"sureselect.exon.v5_utr": "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed",
 		"sureselect.exon.v6"	: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed",
 		"panel_paed_v5_w5.1"	: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed",
-		"idt.xgen.exome.res"	: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed"
+		"idt.xgen.exome.res"	: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed",
+		"vcrome2.1_pkv2"	: "/data/Clinomics/Ref/khanlab/hotspot/hg19_Hotspot.08.08.16_merged.bed"
 	},
 	"verifyBamID_vcf"       :{
 		"clin.ex.v1"		: "/data/Clinomics/Ref/khanlab/verifyBamID/Clinical_Research_Exome.recode.vcf",

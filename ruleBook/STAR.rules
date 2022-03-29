@@ -40,7 +40,7 @@ rule STARens:
 		"{subject}/{TIME}/{sample}/{sample}.star.bam",
 		"{subject}/{TIME}/{sample}/{sample}.star.bam.bai",
 		"{subject}/{TIME}/{sample}/{sample}Chimeric.out.junction",
-		"{subject}/{TIME}/{sample}/{sample}.ENS_transcriptome.bam",
+		temp("{subject}/{TIME}/{sample}/{sample}.ENS_transcriptome.bam"),
 	version:
 		config["STAR"]
 	params:
