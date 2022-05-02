@@ -25,7 +25,6 @@ if HOST == 'biowulf.nih.gov':
 	configfile: NGS_PIPELINE +"/config/config_common_biowulf.json"
 elif HOST == 'login01':
 	configfile: NGS_PIPELINE +"/config/config_common_tgen.json"
-
 config['host'] = HOST
 GROUP=config['group']
 VERSION=config["pipeline_version"]
@@ -39,6 +38,7 @@ MAIL=config['mail']
 #		module purge is needed to remove all the loaded modules and
 #			inside the rule load what is necessary.
 ###########################################################################
+
 shell.prefix("""
 set -e -o pipefail
 module purge
@@ -77,7 +77,6 @@ for subject,samples in config['subject'].items():
 FQ={}
 for sample in config['library'].keys():
 	for fq in config['library'][sample]:
-		print(fq)
 		if len(config['library'][sample]) == 1:
 			if os.path.isfile(DATA_DIR+fq+"/"+fq+"_R1.fastq.gz"):
 				FQ[sample] =[DATA_DIR+fq+"/"+fq+"_R1.fastq.gz", DATA_DIR+fq+"/"+fq+"_R2.fastq.gz"]

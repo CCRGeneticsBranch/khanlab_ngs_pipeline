@@ -110,6 +110,7 @@ rule GATK_RNASeq_PR:
         shell: """
         #######################
         module load GATK/{version}
+	module load samtools 
         java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $GATK_JAR -T PrintReads -R {input.ref} -I {input.bam} -o {output.bam} -BQSR {input.mat}
         mv {wildcards.base}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.final.bai {output.index}
         ######################

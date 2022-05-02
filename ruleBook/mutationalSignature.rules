@@ -69,7 +69,9 @@ rule Cosmic3Signature:
 	shell: """
 	#######################
 	module load R/4.0.5 
-	module load python/{params.python}
+	source /data/khanlab/apps/Conda/etc/profile.d/conda.sh
+	conda activate khanlab_NGS_pipeline_Hg19
+#	module load python/{params.python}
 	if [ -d "{wildcards.base}/input" ]; then rm -Rf {wildcards.base}/input ; fi
 	mkdir {wildcards.base}/input
 	cp {input.Files}  {wildcards.base}/input

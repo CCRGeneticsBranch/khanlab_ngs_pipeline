@@ -7,7 +7,7 @@ rule arriba:
     config["STAR-Arriba"]
   params:
     rulename = "arriba",
-    batch    = config[config['host']]['job_STAR_TPM'],
+    batch    = config[config['host']]['job_arriba'],
     star_gencode_ref  = config['star_2.7.6a_arriba'],
     home     = WORK_DIR,
     arriba   = config['Arriba'],
