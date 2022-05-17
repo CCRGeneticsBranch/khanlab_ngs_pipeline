@@ -1,7 +1,7 @@
 {
 	"biowulf.nih.gov":{
 		"job_default"    : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=01:00:00 --mem=02G  --cpus-per-task=1   --gres=lscratch:02",
-		"job_arriba"     : "--mail-type=FAIL,TIME_LIMIT_90 --partition=largemem --time=36:00:00 --mem=1500G  --cpus-per-task=16 --gres=lscratch:800",
+		"job_arriba"     : "--mail-type=FAIL,TIME_LIMIT_90 --partition=quick,norm --time=36:00:00 --mem=300G  --cpus-per-task=16 --gres=lscratch:800",
 		"job_snpeff"     : "--partition=quick,norm  --mail-type=FAIL,TIME_LIMIT_90 --time=02:00:00 --mem=10G  --cpus-per-task=16  --gres=lscratch:05",
 		"job_VEP"	     : "--partition=quick,norm  --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=16G  --cpus-per-task=1",
 		"job_pvacseq"    : "--partition=ccr,norm  --mail-type=FAIL,TIME_LIMIT_90 --time=3-00:00:00 --mem=48G  --cpus-per-task=16",
@@ -52,7 +52,7 @@
 		"job_coverage"   : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=16G  --cpus-per-task=1",
 		"job_vcf2txt"    : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=01:00:00 --mem=02G  --cpus-per-task=2",
 		"job_hla"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=6:00:00 --mem=4G  --cpus-per-task=36",
-		"job_hlaminer"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=18:00:00 --mem=16G  --cpus-per-task=2",
+		"job_hlaminer"        : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=48:00:00 --mem=50G  --cpus-per-task=2",
 		"job_annovar"    : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=04:00:00 --mem=8G  --cpus-per-task=2",
 		"job_annot"      : "--mail-type=FAIL,TIME_LIMIT_90 --partition=quick,norm    --time=04:00:00 --mem=04G  --cpus-per-task=2",
 		"job_bamUtil"    : "--partition=norm,ccr --mail-type=FAIL,TIME_LIMIT_90 --time=08:00:00 --mem=6G  --cpus-per-task=2",

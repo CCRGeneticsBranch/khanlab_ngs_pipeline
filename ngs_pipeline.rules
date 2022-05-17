@@ -184,8 +184,8 @@ for subject in config['subject'].keys():
 	tumor  = None
 	pair   = None
 	for sample in config['subject'][subject]:
-		if config['sample_type'][sample] == 'Tumor':
-#			TARGET +=[subject+"/"+TIME+"/"+sample+"/calls/"+sample+".MuTect2.raw.vcf.gz"]
+#added xeno
+		if(config['sample_type'][sample] == 'Tumor' or config['sample_type'][sample] == 'Xeno'):
 			tumor = 'yes'
 			if sample in config['sample_references'].keys():
 				pair  = 'yes'
@@ -193,13 +193,11 @@ for subject in config['subject'].keys():
 			normal = 'yes'
 	if pair =='yes':
 		DECIDE_GL[subject] = 'gl_only'
-#		TARGET +=[subject+"/"+TIME+"/"+sample+"/calls/"+sample+".MuTect2_TN.raw.vcf.gz"]
 	elif pair == None:
 		if tumor == None and normal =='yes':
 			DECIDE_GL[subject] = 'gl_only'
 		else:
 			ACT_TYPE +=[subject]
-#			TARGET +=[subject+"/"+TIME+"/"+sample+"/calls/"+sample+".MuTect2_PON.raw.vcf.gz"]
 
 
 
