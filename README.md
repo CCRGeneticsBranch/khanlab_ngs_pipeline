@@ -54,13 +54,11 @@ Bioinformatics Tools Listed in [config files](config/config_common.json)
 
 
 ### RNASeq:
-- QC
-- Tophat, STAR
-- Broad Standard Practices on STAR bam
-- fusion-catcher, tophat-fusion, STAR-fusion
-- Cufflinks (ENS and UCSC)
-- Rsubread TPM (ENS, UCSC), Gene, Transcript and Exon Level
-- In-house Exon Expression (ENS and UCSC)
+- 
+- Mapping - STAR
+- Variant analysis - GATK
+- Fusion calling - fusion-catcher, Arriba, STAR-fusion
+- Gene expression - RSEM
 - Haplotype Caller
 - snpEff, Annovar, SIFT, pph2, Custom Annotation
 - Actionable Fusion classification
