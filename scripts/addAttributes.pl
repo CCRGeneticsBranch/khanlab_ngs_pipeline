@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
+
 local $SIG{__WARN__} = sub {
 	my $message =shift;
 	die $message;
