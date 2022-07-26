@@ -14,7 +14,7 @@
 		"job_STAR"       : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=30:00:00 --mem=160G  --cpus-per-task=30  --gres=lscratch:700",
 		"job_rsem"       : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=10:00:00 --mem=32G  --cpus-per-task=25  --gres=lscratch:200",
 		"job_Picard_bam" : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=24:00:00 --mem=24G  --cpus-per-task=2  --gres=lscratch:100",		
-		"job_STAR_TPM"   : "--mail-type=FAIL,TIME_LIMIT_90 --partition=ccr,norm --time=48:00:00 --mem=373G  --cpus-per-task=16  --gres=lscratch:1000",
+		"job_STAR_TPM"   : "--mail-type=FAIL,TIME_LIMIT_90 --partition=ccr,norm --time=48:00:00 --mem=200G  --cpus-per-task=16  --gres=lscratch:700",
 		"job_STAR_Fusion" : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=16G  --cpus-per-task=25  --gres=lscratch:200",
 		"job_PPH2"       : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=24:00:00 --mem=04G  --cpus-per-task=2   --gres=lscratch:10",
 		"job_SIFT"       : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=02G  --cpus-per-task=1   --gres=lscratch:10",
