@@ -162,7 +162,6 @@ rule pVACseq:
 		config["version_python"],
 	params:
 		rulename = "pVACseq",
-		python   = config["version_python"],
 		normal   = lambda wildcards: config['sample_references'][wildcards.sample][0],
 		tool 	 = NGS_PIPELINE + "/scripts/pvacseq.sh",
 		IEDB	 = config['IEDB'],
@@ -196,7 +195,7 @@ rule Merge_pvacseq:
 		aggregate_input
 	output:
 		"{base}/{TIME}/{sample}/NeoAntigen/{sample}.final.txt"
-	version: config['pvacseq']
+	envmodules: config['pvacseq']
 	params:
 		rulename = "Merge_pvacseq",
 		python   = config["version_python"],
