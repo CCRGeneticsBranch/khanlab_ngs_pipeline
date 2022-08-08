@@ -34,7 +34,7 @@
 	"version_python"	: "python/2.7",
 	"python3"		: "python/3.7",
 	"version_blast"		: "2.5.0+",
-	"VEP"			: "86",
+	"VEP"			: "VEP/86",
 	"IEDB"			: "/opt/iedb",
 	"target_intervals"	:{
 		"wholegenome"		: "/data/Clinomics/Ref/khanlab/design/WholeGenome.target.hg19.merged.bed",
