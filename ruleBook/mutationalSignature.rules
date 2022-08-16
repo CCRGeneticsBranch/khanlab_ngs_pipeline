@@ -59,7 +59,7 @@ rule Cosmic3Signature:
 		SBS ="{base}/{sample}.SBS96_cosmic_v3.pdf",
 		DBS ="{base}/{sample}.DBS78_cosmic_v3.pdf"
 	envmodules:
-		config["version_R"],
+		config["version_R1"],
 		config["python3"]
 	params:
 		rulename = "Cosmic3Signature",

@@ -4,7 +4,7 @@ set +e
 
 allele=`cut -f1 $1 |grep -v Allele|tr '\n' ',' |sed -e 's/,$//g'`
 
-module load pvactools/$5
+module load pvactools/1.3.5
 
 pvacseq run --iedb-install-directory /opt/iedb -e 8,9,10,11,12,13,14 -t $SLURM_CPUS_PER_TASK  --fasta-size=400 $2 $3 ${allele} {NNalign,NetMHC,NetMHCIIpan,NetMHCcons,NetMHCpan,PickPocket,SMM,SMMPMBEC,SMMalign} $4    2>$4/$3_err
 
