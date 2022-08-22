@@ -35,14 +35,22 @@ seg.len= (r.start-100)/length(files)
 r = r.start - seg.len;
 
 z=length(files)
-if(z > 3){
+if(z >= 4){
          for (i in 1:length(files)){
                LOH.data   <-read.table(paste(DIR,files[i] ,sep = ""), sep="\t", quote="", head=T)
                circos(cir="hg19", R=r, W=seg.len-0.5, type="s", mapping=LOH.data, col.v=3, col=cols[i], B=FALSE, cex=0.0003, lwd=1)
                r=r-seg.len 
          }
+} else if(z == 1) {
+         seg.len= (r.start-325)/length(files)
+         r = r.start - seg.len;
+         for (i in 1:length(files)){
+               LOH.data   <-read.table(paste(DIR,files[i] ,sep = ""), sep="\t", quote="", head=T)
+               circos(cir="hg19", R=r, W=seg.len-0.5, type="s", mapping=LOH.data, col.v=3, col=cols[i], B=FALSE, cex=0.0003, lwd=1)
+               r=r-seg.len
+         }
 } else {
-         seg.len= (r.start-230)/length(files)
+         seg.len= (r.start-275)/length(files)
          r = r.start - seg.len;
          for (i in 1:length(files)){
                LOH.data   <-read.table(paste(DIR,files[i] ,sep = ""), sep="\t", quote="", head=T)

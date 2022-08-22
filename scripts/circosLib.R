@@ -34,7 +34,7 @@ r=300
 for (i in 1:length(files)){
         LOH.data   <-read.table(paste(DIR,files[i] ,sep = ""), sep="\t", quote="", head=T)
         circos(cir="hg19", R=r, W=100, type="s", mapping=LOH.data, col.v=3, col=cols[i], B=FALSE, cex=0.0003, lwd=1)
-	r=r-45
+	r=r-100
 }
 
 
