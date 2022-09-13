@@ -185,7 +185,7 @@ for subject in config['subject'].keys():
 	pair   = None
 	for sample in config['subject'][subject]:
 #added xeno
-		if(config['sample_type'][sample] == 'Tumor' or config['sample_type'][sample] == 'Xeno'):
+		if(config['sample_type'][sample] == 'Tumor' or config['sample_type'][sample] == 'Xeno' or config['sample_type'][sample] == 'PDX'):
 			tumor = 'yes'
 			if sample in config['sample_references'].keys():
 				pair  = 'yes'
@@ -330,6 +330,16 @@ onsuccess:
 #	shell("find .snakemake/ ! -readable -prune \( -type f -user $USER -exec chmod g+r {{}} \; \) , \( -type d -user $USER -exec chmod g+rwx {{}} \; \)")
 	shell("find .snakemake/ ! -readable -prune -group $USER -exec chgrp -f {GROUP} {{}} \;")
 	print("Workflow finished, no error")
+
+
+def get_mem_mb(wildcards, attempt):
+    return attempt * 100
+
+def get_mem_mb(wildcards, threads):
+    return threads * 150
+
+
+
 ###########################################################################
 rule Khanlab_Pipeline:
 	input:
@@ -449,6 +459,8 @@ rule BWA:
 	envmodules:
 		config["bwa"],
 		config["samtools"]
+	resources:
+		mem_mb=get_mem_mb
 	params:
 		rulename  = "BWA",
 		platform  = config["platform"],
