@@ -64,7 +64,7 @@ rule Cosmic3Signature:
 	params:
 		rulename = "Cosmic3Signature",
 		batch    = config[config['host']]["job_default"],
-		tool   =NGS_PIPELINE + "/scripts/new.py",
+		tool   =NGS_PIPELINE + "/scripts/matrixgenerator.py",
 		home     = WORK_DIR,
 	shell: """
 	#######################

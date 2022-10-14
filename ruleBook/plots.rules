@@ -88,7 +88,9 @@ rule Circos:
 	output:
 		"{subject}/{TIME}/qc/{subject}.circos.png",
 	envmodules: config["version_R"]
+
 	params:
+#		resources= config[config['host']]["job_covplot"],
 		rulename = "Circos",
 		batch    = config[config['host']]["job_covplot"]
 	shell: """
