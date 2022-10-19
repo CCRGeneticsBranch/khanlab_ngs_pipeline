@@ -1,6 +1,12 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
-TARGET     += ["{subject}/{TIME}/{sample}/TCellExTRECT/{sample}_TCellExTRECT_naive.txt".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+#TARGET     += ["{subject}/{TIME}/{sample}/TCellExTRECT/{sample}_TCellExTRECT_naive.txt".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+
+if 'subject' in config:
+        for subject in config['subject']:
+                for library in config['subject'][subject]:
+                        if config['sample_captures'][library] not in config['Panel_List']:
+                                TARGET    += [subject+"/"+TIME+"/"+library+"/TCellExTRECT/"+library+"_TCellExTRECT_naive.txt"]
 
 rule TcellExtrect:
 	input:
