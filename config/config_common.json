@@ -1,6 +1,6 @@
 {
 	"pipeline_version"	: "v4.2",
-	"mail"			: "-c gangalapudiv2@nih.gov",
+	"mail"			: "-c gangalapudiv2@nih.gov -c weij@nih.gov -c sevillas2@nih.gov -c wenxi@mail.nih.gov",
 	"mails"			: "-c wangc@mail.nih.gov -c chouh@nih.gov -c NCIBioinformatics_Oncogenomics@mail.nih.gov",
 	"platform"		: "Illumina",
 	"samtools"		: "samtools/0.1.19",
@@ -101,5 +101,5 @@
 		"agilent.v7"	:{"Normal":"20","Tumor":"20","VAF":"0.1"},
 		"wholegenome"	:{"Normal":"5","Tumor":"5","VAF":"0.1"}
 	},
-	"exclude_from_rnaseq"            : ["smarter.tcr"]
+	"exclude_from_rnaseq"	: ["smarter.tcr"]
 }
