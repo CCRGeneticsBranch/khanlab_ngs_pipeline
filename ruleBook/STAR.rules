@@ -49,28 +49,66 @@ rule STARens:
 		config['bcftools']
 	params:
 		rulename = "STARens",
-#		samtools = config['samtools'],
 		batch    = config[config['host']]['job_STAR_TPM'],
 		star_ens_ref  = config['star_2.5.3a_ens'],
 		home     = WORK_DIR,
-#		picard   = config['picard'],
-#		bedtools = config['bedtools'],
-#		bcftools = config['bcftools'],
-	shell: """
-	#########################################
-	cd ${{LOCAL}}/
-	ulimit -u 10240 -n 16384
-	STAR	--genomeDir {params.star_ens_ref} --readFilesIn {input.R[0]} {input.R[1]} --readFilesCommand zcat --outFileNamePrefix {wildcards.sample}_ENS --runThreadN ${{THREADS}} --twopassMode Basic --outSAMunmapped Within --chimSegmentMin 12  --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10  --alignMatesGapMax 100000  --alignIntronMax 100000  --chimSegmentReadGapMax 3 --outFilterMismatchNmax 2 --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM --outBAMsortingThreadN 6  --limitBAMsortRAM 122471659382
-	echo "STAR ENS mapping completed"
-	mv -f {wildcards.sample}_ENSChimeric.out.junction {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}Chimeric.out.junction
-	mv -f {wildcards.sample}_ENSAligned.toTranscriptome.out.bam {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.ENS_transcriptome.bam
-	mv -f {wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
-	java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT={wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
-	samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
-	awk -F"\\t" 'BEGIN{{OFS="\\t"}}{{strand=($4==1)?"+":"-";annotated=($6==1)?"true":"false";if($5==0) motif="non-canonical"; if($5==1)motif="GT/AG";if($5==2)motif="CT/AC";if($5==3)motif="GC/AC";if($5==4)motif="CT/GC";if($5==5)motif="AT/AC";if($5==6)motif="GT/AT";print $1,$2,$3,"motif="motif";uniquely_mapped="$7";multi_mapped="$8";maximum_spliced_alignment_overhang="$9";annotated_junction="annotated,$7,strand}}' {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab |bedtools sort |bgzip > {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
-	tabix -0 -p bed {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
-	##########################################
-	"""
+	shell: 
+		"""
+		#########################################
+		# set LOCAL
+		cd ${{LOCAL}}/
+
+		# set tmp dir		
+		if [[ -d "/lscratch/$SLURM_JOB_ID" ]]; then 
+			TMPDIR="/lscratch/$SLURM_JOB_ID"
+		else
+			TMPDIR=tmp/star_tmp
+			if [[ ! -d $TMPDIR ]]; then mkdir -p $TMPDIR; fi
+		fi
+
+		# Run STAR
+		STAR	--genomeDir {params.star_ens_ref} \
+		--readFilesIn {input.R[0]} {input.R[1]} \
+		--readFilesCommand zcat \
+		--outFileNamePrefix $TMPDIR/{wildcards.sample}_ENS \
+		--runThreadN ${{THREADS}} \
+		--twopassMode Basic \
+		--outSAMunmapped Within \
+		--chimSegmentMin 12  \
+		--chimJunctionOverhangMin 12 \
+		--alignSJDBoverhangMin 10  \
+		--alignMatesGapMax 100000  \
+		--alignIntronMax 100000  \
+		--chimSegmentReadGapMax 3 \
+		--outFilterMismatchNmax 2 \
+		--outSAMtype BAM Unsorted \
+		--quantMode TranscriptomeSAM
+
+		echo "STAR ENS mapping completed"
+		
+		# sort file
+		samtools sort -m 150G -T $TMPDIR $TMPDIR/{wildcards.sample}_ENSAligned.out.bam -o $TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam
+
+		# MOVE JUNCTIONS FILE
+		mv -f $TMPDIR/{wildcards.sample}_ENSChimeric.out.junction {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}Chimeric.out.junction
+
+		# MOVE TRANSCRIPTOME BAM
+		mv -f $TMPDIR/{wildcards.sample}_ENSAligned.toTranscriptome.out.bam {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.ENS_transcriptome.bam
+
+		#MOVE TAB
+		mv -f $TMPDIR/{wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
+
+		# RUN PICARD
+		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
+		
+		# index
+		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
+
+		# filt tabix
+		awk -F"\\t" 'BEGIN{{OFS="\\t"}}{{strand=($4==1)?"+":"-";annotated=($6==1)?"true":"false";if($5==0) motif="non-canonical"; if($5==1)motif="GT/AG";if($5==2)motif="CT/AC";if($5==3)motif="GC/AC";if($5==4)motif="CT/GC";if($5==5)motif="AT/AC";if($5==6)motif="GT/AT";print $1,$2,$3,"motif="motif";uniquely_mapped="$7";multi_mapped="$8";maximum_spliced_alignment_overhang="$9";annotated_junction="annotated,$7,strand}}' {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab |bedtools sort |bgzip > {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
+		tabix -0 -p bed {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
+		##########################################
+		"""
 
 ######################
 # STAR_Fusion
