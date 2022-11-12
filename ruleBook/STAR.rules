@@ -99,7 +99,7 @@ rule STARens:
 		mv -f $TMPDIR/{wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
 
 		# RUN PICARD
-		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
+		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
 		
 		# index
 		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
