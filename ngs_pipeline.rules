@@ -874,6 +874,7 @@ rule SNPEff:
 	input:
 		vcf="{subject}/{TIME}/{sample}/calls/{base}.raw.vcf",
 		ref=config["reference"],
+		db=config["snpeff_db"],
 	output:
 		eff="{subject}/{TIME}/{sample}/calls/{base}.raw.snpEff.vcf"
 	envmodules: config["snpEff"]
@@ -883,11 +884,19 @@ rule SNPEff:
 		snpEff_genome =config["snpEff_genome"],
 		snpEff_config=NGS_PIPELINE + "/Tools_config/"+config["snpEff_config"],
 		annovar       =config["annovar"]
-	shell: """
-	#######################
-	java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $SNPEFF_JARPATH/SnpSift.jar dbnsfp -c {params.snpEff_config} -a {input.vcf} | java -Xmx${{MEM}}g -jar $SNPEFF_JARPATH/snpEff.jar -t -canon {params.snpEff_genome} > {output.eff}
-	#######################
-	"""
+	shell: 
+		"""
+		#######################
+		java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $SNPEFF_JARPATH/SnpSift.jar \
+		-db {input.db} \
+		-c {params.snpEff_config} \
+		-a {input.vcf} | \
+		java -Xmx${{MEM}}g -jar $SNPEFF_JARPATH/snpEff.jar \
+		-t \
+		-canon {params.snpEff_genome} > {output.eff}
+		#######################
+		"""
+		
 ############
 #       vcf2txt
 ############
