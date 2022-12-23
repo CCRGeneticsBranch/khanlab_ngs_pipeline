@@ -888,7 +888,7 @@ rule SNPEff:
 		"""
 		#######################
 		java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $SNPEFF_JARPATH/SnpSift.jar \
-		-db {input.db} \
+		dbnsfp -db {input.db} \
 		-c {params.snpEff_config} \
 		-a {input.vcf} | \
 		java -Xmx${{MEM}}g -jar $SNPEFF_JARPATH/snpEff.jar \
