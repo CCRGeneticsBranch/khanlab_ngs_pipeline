@@ -67,18 +67,18 @@ rule STARens:
 		fi
 
 		# Run STAR
-		STAR	--genomeDir {params.star_ens_ref} \
+		STAR --genomeDir {params.star_ens_ref} \
 		--readFilesIn {input.R[0]} {input.R[1]} \
 		--readFilesCommand zcat \
 		--outFileNamePrefix $TMPDIR/{wildcards.sample}_ENS \
 		--runThreadN ${{THREADS}} \
 		--twopassMode Basic \
 		--outSAMunmapped Within \
-		--chimSegmentMin 12  \
+		--chimSegmentMin 12 \
 		--chimJunctionOverhangMin 12 \
-		--alignSJDBoverhangMin 10  \
-		--alignMatesGapMax 100000  \
-		--alignIntronMax 100000  \
+		--alignSJDBoverhangMin 10 \
+		--alignMatesGapMax 100000 \
+		--alignIntronMax 100000 \
 		--chimSegmentReadGapMax 3 \
 		--outFilterMismatchNmax 2 \
 		--outSAMtype BAM Unsorted \
@@ -99,9 +99,10 @@ rule STARens:
 		mv -f $TMPDIR/{wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
 
 		# RUN PICARD
-		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
+		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
 		
-		# index
+		# sort, index
+		samtools sort -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
 		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
 
 		# filt tabix
