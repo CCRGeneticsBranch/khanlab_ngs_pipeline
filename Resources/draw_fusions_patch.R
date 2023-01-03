@@ -1,6 +1,8 @@
+#!/usr/bin/env Rscript
 
-iinal_1_K2_n_5u_AND_2_K2_n_5_200u_AND_3_K2_t_5u_AND_4_K2_t_5_200_AND_5_K3_n_5u_AND_6_K3_n_5_200u_AND_7_K3_t_5u_AND_8_K3_t_5_200_AND_1_K_n_5u_AND_2_K_n_5_200u_AND_3_K_t_5u_AND_4_K_t_5_200.140-rnings as they happen instead of collecting them for after a loop ends
+# print warnings as they happen instead of collecting them for after a loop ends
 options(warn=1)
+
 
 # define valid parameters
 parameters <- list(
