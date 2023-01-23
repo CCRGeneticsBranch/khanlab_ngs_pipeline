@@ -398,7 +398,7 @@ rule MergeFQ:
 		R2 = temp("{base}/{TIME}/FQ/{sample}_R2.fastq.gz")
 	params:
 		rulename = "MergeFQ",
-		batch    = config[config['host']]["job_default"],
+		batch    = config[config['host']]["job_copynumber"],
 		work_dir =  WORK_DIR
 	shell: """
 	#######################
@@ -909,7 +909,7 @@ rule VCF2TXT:
 	envmodules: config["annovar"]
 	params:
 		rulename      ="VCF2TXT",
-		batch         =config[config['host']]["job_default"],
+		batch         =config[config['host']]["job_copynumber"],
 		annovar       =config["annovar"]
 	shell: """
 	#######################

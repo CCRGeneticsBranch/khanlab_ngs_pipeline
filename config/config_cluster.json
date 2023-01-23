@@ -42,7 +42,7 @@
 		"job_fastqc"     : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=02:00:00 --mem=19G  --cpus-per-task=10  --gres=lscratch:02",
 		"job_expressed"  : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=01:00:00 --mem=02G  --cpus-per-task=1",
 		"job_tophatPost" : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=2-12:00:00 --mem=64G  --cpus-per-task=16",
-		"job_bwa"        : "--mail-type=FAIL,TIME_LIMIT_90 --partition=ccr,norm --time=20:00:00 --mem=80G  --cpus-per-task=32 ",
+		"job_bwa"        : "--mail-type=FAIL,TIME_LIMIT_90 --partition=ccr,norm --time=20:00:00 --mem=100G  --cpus-per-task=32 ",
 		"job_bismark"    : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=5-0:00:00 --mem=60G  --cpus-per-task=32 --gres=lscratch:200",
 		"job_cufflinks"  : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=10:00:00 --mem=50G  --cpus-per-task=30",
 		"job_featCount"  : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=04:00:00 --mem=16G  --cpus-per-task=10  --gres=lscratch:100",
