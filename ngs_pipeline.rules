@@ -144,8 +144,8 @@ for subject  in config['RNASeq'].keys():
 ###########################################################################
 # Many of the targets.
 TARGET      = ["{subject}/{TIME}/{sample}/qc/fastqc/{sample}_R2_fastqc.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
-TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen1.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
-TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen1.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/qc/{sample}.bwa.flagstat.txt".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/{sample}.bwa.final.bam".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/qc/{sample}.bwa.hotspot.depth".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
@@ -368,7 +368,7 @@ rule Khanlab_Pipeline:
 	export LC_ALL=C
 	for sub in {params.subs}
         do
-                multiqc -f {WORK_DIR}/${{sub}}/{TIME} -o {WORK_DIR}/${{sub}}/{TIME}/qc/
+                multiqc -f {WORK_DIR}/${{sub}}/{TIME}/ -o {WORK_DIR}/${{sub}}/{TIME}/qc/
                 touch {WORK_DIR}/${{sub}}/{TIME}/successful.txt
 		chmod g+rw {WORK_DIR}/${{sub}}/{TIME}/successful.txt 	
 		chgrp {params.group} {WORK_DIR}/${{sub}}/{TIME}/successful.txt
@@ -466,10 +466,10 @@ rule Fastq_screen:
 	output:
 		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.txt",
 		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.png",
-		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen1.html",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.html",
 		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.txt",
 		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.png",
-		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen1.html"
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.html"
 	envmodules:
 		config["bowtie2"],
 		config["fastq_screen"]
