@@ -144,6 +144,8 @@ for subject  in config['RNASeq'].keys():
 ###########################################################################
 # Many of the targets.
 TARGET      = ["{subject}/{TIME}/{sample}/qc/fastqc/{sample}_R2_fastqc.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
+TARGET      = ["{subject}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.html".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/qc/{sample}.bwa.flagstat.txt".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/{sample}.bwa.final.bam".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
 TARGET     += ["{subject}/{TIME}/{sample}/qc/{sample}.bwa.hotspot.depth".format(TIME=TIME, subject=SAMPLE_TO_SUBJECT[s], sample=s) for s in SAMPLES]
@@ -345,13 +347,15 @@ rule Khanlab_Pipeline:
 	input:
 		TARGET,
 		expand ("ngs_pipeline_{SAMPLESHEET}_{NOW}.rnaseq.done", NOW=NOW, SAMPLESHEET=SAMPLESHEET)
-	version: config["pipeline_version"]
+#	version: config["pipeline_version"]
 	wildcard_constraints:
 		NOW="\w+"
+	envmodules: config["multiqc"]
 	params:
 		rulename = "Khanlab_Pipeline",
 		batch    = config[config['host']]["job_default"],
 		group    = config["group"],
+                version  = config["pipeline_version"],
 		mail 	 = NGS_PIPELINE + "/scripts/tsv2html.final.sh",
 		email    = config["mail"],
 		host     = config["host"],
@@ -364,16 +368,19 @@ rule Khanlab_Pipeline:
 	export LC_ALL=C
 	for sub in {params.subs}
         do
+                multiqc -f {WORK_DIR}/${{sub}}/{TIME}/ -o {WORK_DIR}/${{sub}}/{TIME}/qc/
                 touch {WORK_DIR}/${{sub}}/{TIME}/successful.txt
 		chmod g+rw {WORK_DIR}/${{sub}}/{TIME}/successful.txt 	
 		chgrp {params.group} {WORK_DIR}/${{sub}}/{TIME}/successful.txt
-		rm -f {WORK_DIR}/${{sub}}/{TIME}/*/tophat_*/accepted_hits.bam*
+#		rm -f {WORK_DIR}/${{sub}}/{TIME}/*/tophat_*/accepted_hits.bam*
 		rm -f {WORK_DIR}/${{sub}}/{TIME}/*/*star.bam*
         done
-	ssh -o StrictHostKeyChecking=no {params.host} "{params.mail} --location {WORK_DIR} --host {params.host} --head --version {version} {WORK_DIR}/ngs_pipeline_{SAMPLESHEET}_{NOW}.csv |mutt -e \\\"my_hdr Content-Type: text/html\\\" -s 'Khanlab ngs-pipeline Status' `whoami`@mail.nih.gov {params.email}"
+	ssh -o StrictHostKeyChecking=no {params.host} "{params.mail} --location {WORK_DIR} --host {params.host} --head --version {params.version} {WORK_DIR}/ngs_pipeline_{SAMPLESHEET}_{NOW}.csv |mutt -e \\\"my_hdr Content-Type: text/html\\\" -s 'Khanlab ngs-pipeline Status' `whoami`@mail.nih.gov {params.email}"
 	rm -rf {WORK_DIR}/ngs_pipeline_{SAMPLESHEET}_{NOW}.csv
 	#######################
 	"""
+
+
 ############
 # Print Config to a file
 ############
@@ -398,7 +405,7 @@ rule MergeFQ:
 		R2 = temp("{base}/{TIME}/FQ/{sample}_R2.fastq.gz")
 	params:
 		rulename = "MergeFQ",
-		batch    = config[config['host']]["job_default"],
+		batch    = config[config['host']]["job_copynumber"],
 		work_dir =  WORK_DIR
 	shell: """
 	#######################
@@ -447,6 +454,35 @@ rule FASTQC:
 	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.zip  {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc.zip
 	#######################
 	"""
+
+###########
+# Fastq_screen
+###########
+rule Fastq_screen:
+	input:
+		R1="{base}/{TIME}/FQ/{sample}_R1.fastq.gz",
+		R2="{base}/{TIME}/FQ/{sample}_R2.fastq.gz"
+
+	output:
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.txt",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.png",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R1_screen.html",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.txt",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.png",
+		"{base}/{TIME}/{sample}/qc/fastq_screen/{sample}_R2_screen.html"
+	envmodules:
+		config["bowtie2"],
+		config["fastq_screen"]
+	params:
+		rulename  = "Fastq_screen",
+		batch     = config[config['host']]['job_fastqc'],
+		config_fs = config["fastq_screen-config"]
+	shell:	"""
+	#########################################
+	fastq_screen --conf {params.config_fs} --subset 1000000 --aligner bowtie2 --force {input.R1} {input.R2}  --outdir {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastq_screen/
+ 	#########################################
+	"""
+
 ############
 #       BWA
 ############
@@ -874,6 +910,7 @@ rule SNPEff:
 	input:
 		vcf="{subject}/{TIME}/{sample}/calls/{base}.raw.vcf",
 		ref=config["reference"],
+		db=config["snpeff_db"],
 	output:
 		eff="{subject}/{TIME}/{sample}/calls/{base}.raw.snpEff.vcf"
 	envmodules: config["snpEff"]
@@ -883,11 +920,19 @@ rule SNPEff:
 		snpEff_genome =config["snpEff_genome"],
 		snpEff_config=NGS_PIPELINE + "/Tools_config/"+config["snpEff_config"],
 		annovar       =config["annovar"]
-	shell: """
-	#######################
-	java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $SNPEFF_JARPATH/SnpSift.jar dbnsfp -c {params.snpEff_config} -a {input.vcf} | java -Xmx${{MEM}}g -jar $SNPEFF_JARPATH/snpEff.jar -t -canon {params.snpEff_genome} > {output.eff}
-	#######################
-	"""
+	shell: 
+		"""
+		#######################
+		java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $SNPEFF_JARPATH/SnpSift.jar \
+		dbnsfp -db {input.db} \
+		-c {params.snpEff_config} \
+		-a {input.vcf} | \
+		java -Xmx${{MEM}}g -jar $SNPEFF_JARPATH/snpEff.jar \
+		-t \
+		-canon {params.snpEff_genome} > {output.eff}
+		#######################
+		"""
+		
 ############
 #       vcf2txt
 ############
@@ -900,7 +945,7 @@ rule VCF2TXT:
 	envmodules: config["annovar"]
 	params:
 		rulename      ="VCF2TXT",
-		batch         =config[config['host']]["job_default"],
+		batch         =config[config['host']]["job_copynumber"],
 		annovar       =config["annovar"]
 	shell: """
 	#######################
