@@ -99,12 +99,11 @@ rule STARens:
 		mv -f $TMPDIR/{wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
 
 		# RUN PICARD
-#		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
-                java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
+		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
+		
 		# sort, index
-#		samtools sort -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
+		samtools sort -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
 		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
-
 
 		# filt tabix
 		awk -F"\\t" 'BEGIN{{OFS="\\t"}}{{strand=($4==1)?"+":"-";annotated=($6==1)?"true":"false";if($5==0) motif="non-canonical"; if($5==1)motif="GT/AG";if($5==2)motif="CT/AC";if($5==3)motif="GC/AC";if($5==4)motif="CT/GC";if($5==5)motif="AT/AC";if($5==6)motif="GT/AT";print $1,$2,$3,"motif="motif";uniquely_mapped="$7";multi_mapped="$8";maximum_spliced_alignment_overhang="$9";annotated_junction="annotated,$7,strand}}' {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab |bedtools sort |bgzip > {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
