@@ -28,6 +28,7 @@
 	"FA_path"		: "/data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/",
 	"pfam_path"		: "/data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/PfamDB",
 	"TcellExtrect_image"	: "/data/khanlab/projects/TcellExTrect/tcell_extrect_v1.sif",
+        "fastq_screen-config"   : "/data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/fastq_screen.conf",
 	"design"		: "/data/Clinomics/Ref/khanlab/design",
 	"design_bed"		: "/data/Clinomics/Ref/khanlab/design/SeqCap_EZ_Exome_v3_capture_trimed.target.hg19.merged.bed",
 	"snpeff_db"		: "/fdb/dbNSFP2/dbNSFP2.4.txt.gz",
