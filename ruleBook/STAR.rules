@@ -103,7 +103,7 @@ rule STARens:
 		# RUN PICARD
 		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
 		# sort, index
-		samtools sort -n  -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
+		samtools sort  -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
 		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
                  
 		# filt tabix
