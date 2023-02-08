@@ -36,8 +36,8 @@ rule STARens:
 		R1="{subject}/{TIME}/FQ/{sample}_R1.fastq.gz",
 		R2="{subject}/{TIME}/FQ/{sample}_R2.fastq.gz",
 	output:
-		temp("{subject}/{TIME}/{sample}/{sample}.star.bam"),
-		temp("{subject}/{TIME}/{sample}/{sample}.star.bam.bai"),
+		"{subject}/{TIME}/{sample}/{sample}.star.bam",
+		"{subject}/{TIME}/{sample}/{sample}.star.bam.bai",
 		"{subject}/{TIME}/{sample}/{sample}Chimeric.out.junction",
 		"{subject}/{TIME}/{sample}/{sample}_ENS_SJ.out.tab.bed.gz",
 		temp("{subject}/{TIME}/{sample}/{sample}.ENS_transcriptome.bam"),
@@ -84,10 +84,12 @@ rule STARens:
 		--outSAMtype BAM Unsorted \
 		--quantMode TranscriptomeSAM
 
+
 		echo "STAR ENS mapping completed"
 		
 		# sort file
-		samtools sort -m 150G -T $TMPDIR $TMPDIR/{wildcards.sample}_ENSAligned.out.bam -o $TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam
+                module load samtools
+		samtools sort --reference /data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/GRCh37.primary_assembly.genome_ERCC92_ksorted.fa  -m 150G -T $TMPDIR $TMPDIR/{wildcards.sample}_ENSAligned.out.bam -o $TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam
 
 		# MOVE JUNCTIONS FILE
 		mv -f $TMPDIR/{wildcards.sample}_ENSChimeric.out.junction {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}Chimeric.out.junction
@@ -99,13 +101,11 @@ rule STARens:
 		mv -f $TMPDIR/{wildcards.sample}_ENSSJ.out.tab {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab
 
 		# RUN PICARD
-#		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
-                java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
+		java -Xmx75g -Djava.io.tmpdir=$TMPDIR -jar $PICARD_JAR AddOrReplaceReadGroups VALIDATION_STRINGENCY=SILENT INPUT=$TMPDIR/{wildcards.sample}_ENSAligned.sortedByCoord.out.bam OUTPUT={params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam SORT_ORDER=coordinate RGLB={wildcards.sample} RGPU={wildcards.sample} RGPL=ILLUMINA RGSM={wildcards.sample} RGCN=khanlab
 		# sort, index
-#		samtools sort -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam		
+		samtools sort -n  -m 150G -T $TMPDIR {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.picard.bam -o {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
 		samtools index {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}.star.bam
-
-
+                 
 		# filt tabix
 		awk -F"\\t" 'BEGIN{{OFS="\\t"}}{{strand=($4==1)?"+":"-";annotated=($6==1)?"true":"false";if($5==0) motif="non-canonical"; if($5==1)motif="GT/AG";if($5==2)motif="CT/AC";if($5==3)motif="GC/AC";if($5==4)motif="CT/GC";if($5==5)motif="AT/AC";if($5==6)motif="GT/AT";print $1,$2,$3,"motif="motif";uniquely_mapped="$7";multi_mapped="$8";maximum_spliced_alignment_overhang="$9";annotated_junction="annotated,$7,strand}}' {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab |bedtools sort |bgzip > {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
 		tabix -0 -p bed {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/{wildcards.sample}_ENS_SJ.out.tab.bed.gz
@@ -160,10 +160,11 @@ rule RSEMens:
 		ref      = config['rsem_ens_ref'],
 		batch    = config[config['host']]['job_STAR'],
 		home     = WORK_DIR,
+		library  =  lambda wildcards: "--strandedness reverse" if config['sample_captures'][wildcards.sample] != "polya" else "",
 	shell: """
 	################################
 	cd ${{LOCAL}}/
-	rsem-calculate-expression --no-bam-output --paired-end -p ${{THREADS}}  --estimate-rspd  --bam {params.home}/{input.bam} {params.ref} {wildcards.sample}_ENS
+	rsem-calculate-expression --no-bam-output --paired-end -p ${{THREADS}} {params.library} --estimate-rspd  --bam {params.home}/{input.bam} {params.ref} {wildcards.sample}_ENS
 	echo "gene and transcript level counts generated"
 	mkdir -p {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/RSEM_ENS
 	mv -f {wildcards.sample}_ENS.genes.results {params.home}/{wildcards.subject}/{TIME}/{wildcards.sample}/RSEM_ENS/{wildcards.sample}.rsem_ENS.genes.results
