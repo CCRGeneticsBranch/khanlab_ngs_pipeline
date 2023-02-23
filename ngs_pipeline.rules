@@ -443,15 +443,11 @@ rule FASTQC:
 	R2=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R2"`
 
 	echo "Working on ${{R1}}"
-	zcat ${{R1}} |fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} /dev/stdin
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.html {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc.html
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc      {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.zip  {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc.zip
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} ${{R1}}
+
 	echo "Working on ${{R2}}"
-	zcat ${{R2}} |fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} /dev/stdin
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.html {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc.html
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc      {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.zip  {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc.zip
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} ${{R2}}
+
 	#######################
 	"""
 
