@@ -1,0 +1,35 @@
+# Adapted from CCBR Pipeliner RNA-seq InitialQC
+
+rule kraken:
+	input: 
+		R=lambda wildcards: FQ[wildcards.sample]
+	output: 
+		krakentaxa = "{base}/{TIME}/{sample}/qc/kraken/{sample}.kraken.taxa.txt",
+		kronahtml = "{base}/{TIME}/{sample}/qc/kraken/{sample}.kraken.krona.html"
+        envmodules:
+		config['kraken'],
+		config['krona']
+	params: 
+		rulename='kraken',
+                batch=config[config['host']]["job_kraken"],
+		bacdb=config['krakendb']
+	shell: """
+        #############################################################
+        R1=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R1"`
+        R2=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R2"`
+
+	if [ ! -d {wildcards.base}/{TIME}/{wildcards.sample}/qc/kraken/ ];then mkdir {wildcards.base}/{TIME}/{wildcards.sample}/qc/kraken/ ;fi
+
+        # Copy Kraken database from ftp to lscratch
+	cd /lscratch/$SLURM_JOBID;
+	cp -rv {params.bacdb} /lscratch/$SLURM_JOBID/;
+
+	kraken --db /lscratch/$SLURM_JOBID/`echo {params.bacdb}|awk -F "/" '{{print \$NF}}'` --fastq-input --gzip-compressed --threads ${{THREADS}} --output /lscratch/$SLURM_JOBID/{wildcards.sample}.krakenout --preload --paired ${{R1}} ${{R2}}
+	kraken-translate --mpa-format --db /lscratch/$SLURM_JOBID/`echo {params.bacdb}|awk -F "/" '{{print \$NF}}'` /lscratch/$SLURM_JOBID/{wildcards.sample}.krakenout |cut -f2|sort|uniq -c|sort -k1,1nr > /lscratch/$SLURM_JOBID/{wildcards.sample}.krakentaxa
+	cut -f2,3 /lscratch/$SLURM_JOBID/{wildcards.sample}.krakenout | ktImportTaxonomy - -o /lscratch/$SLURM_JOBID/{wildcards.sample}.kronahtml
+
+        # Copy results files back to diretory
+	mv /lscratch/$SLURM_JOBID/{wildcards.sample}.krakentaxa {output.krakentaxa}
+	mv /lscratch/$SLURM_JOBID/{wildcards.sample}.kronahtml {output.kronahtml}
+        #############################################################
+	"""
