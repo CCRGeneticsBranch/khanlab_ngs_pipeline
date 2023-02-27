@@ -429,7 +429,9 @@ rule MergeFQ:
 #	FASTQC
 ############
 rule FASTQC:
-	input: R=lambda wildcards: FQ[wildcards.sample]
+	input: 
+		R1="{base}/{TIME}/FQ/{sample}_R1.fastq.gz",
+                R2="{base}/{TIME}/FQ/{sample}_R2.fastq.gz"
 	output:
 		"{base}/{TIME}/{sample}/qc/fastqc/{sample}_R1_fastqc.html",
 		"{base}/{TIME}/{sample}/qc/fastqc/{sample}_R2_fastqc.html"
@@ -439,14 +441,11 @@ rule FASTQC:
 		batch     = config[config['host']]["job_fastqc"]
 	shell: """
 	#######################
-	R1=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R1"`
-	R2=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R2"`
+	echo "Working on ${input.R1}"
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} {input.R1}
 
-	echo "Working on ${{R1}}"
-        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} ${{R1}}
-
-	echo "Working on ${{R2}}"
-        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} ${{R2}}
+	echo "Working on ${input.R2}"
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} {input.R2}
 
 	#######################
 	"""
