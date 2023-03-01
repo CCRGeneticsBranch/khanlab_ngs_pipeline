@@ -1,11 +1,20 @@
-for subject in config['subject']:
-	for sample in config['subject'][subject]:
-		if (config["sample_type"][sample] =='Tumor' or config['sample_type'][sample] == 'Xeno' or config['sample_type'][sample] == 'PDX'):
-			if config['sample_captures'][sample] in config['cnvkit_ref']:
-				TARGET +=[subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cns"]	
-			else:
-				for sample in config['sample_references']: 
-					TARGET +=[subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cnr"]
+
+SAMPLE_TO_SUBJECT  = {}
+for subject,samples in config['subject'].items():
+        for sample in samples:
+                SAMPLE_TO_SUBJECT[sample]=subject
+
+if 'sample_references' in config and len(config['sample_references']) > 0:
+    for sample in config['sample_references'].keys():
+        subject = SAMPLE_TO_SUBJECT[sample]
+        TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cnr"]
+elif ('Tumor' in config['sample_type'].values()) or ('Normal' in config['sample_type'].values()) or ('PDX' in config['sample_type'].values()) or ('Xeno' in config['sample_type'].values()):
+    for sample in config['sample_type'].keys():
+        subject = SAMPLE_TO_SUBJECT[sample]
+        if config['sample_captures'][sample] in config['cnvkit_ref']:
+            TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cns"]
+
+
 ############
 #       cnvkit
 ############
@@ -19,6 +28,8 @@ rule cnvkitPooled:
 	params:
 		rulename  = "cnvkitPooled",
 		batch     = config[config['host']]["job_cnvkit"],
+#		interval= lambda wildcards: config['sample_captures'][wildcards.sample],
+#		sample_capture= config['cnvkit_ref']
 	shell: """
 	#######################
 	cnvkit.py batch -p ${{THREADS}} {input.bam} --reference {input.interval} --output-dir {wildcards.base}/{wildcards.TIME}/{wildcards.sample}/cnvkit/
