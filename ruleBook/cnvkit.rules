@@ -4,15 +4,28 @@ for subject,samples in config['subject'].items():
         for sample in samples:
                 SAMPLE_TO_SUBJECT[sample]=subject
 
+#if 'sample_references' in config and len(config['sample_references']) > 0:
+#    for sample in config['sample_references'].keys():
+#        subject = SAMPLE_TO_SUBJECT[sample]
+#        TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cnr"]
+#elif ('Tumor' in config['sample_type'].values()) or ('Normal' in config['sample_type'].values()) or ('PDX' in config['sample_type'].values()) or ('Xeno' in config['sample_type'].values()):
+#    for sample in config['sample_type'].keys():
+#        subject = SAMPLE_TO_SUBJECT[sample]
+#        if config['sample_captures'][sample] in config['cnvkit_ref'] and sample_type != 'RNAseq':
+#            TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cns"]
+
+
+
 if 'sample_references' in config and len(config['sample_references']) > 0:
     for sample in config['sample_references'].keys():
         subject = SAMPLE_TO_SUBJECT[sample]
         TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cnr"]
 elif ('Tumor' in config['sample_type'].values()) or ('Normal' in config['sample_type'].values()) or ('PDX' in config['sample_type'].values()) or ('Xeno' in config['sample_type'].values()):
-    for sample in config['sample_type'].keys():
-        subject = SAMPLE_TO_SUBJECT[sample]
-        if config['sample_captures'][sample] in config['cnvkit_ref']:
-            TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cns"]
+    for sample, sample_type in config['sample_type'].items():
+        if sample_type != 'RNAseq':
+            subject = SAMPLE_TO_SUBJECT[sample]
+            if config['sample_captures'][sample] in config['cnvkit_ref']:
+                TARGET += [subject+"/"+TIME+"/"+sample+"/cnvkit/"+sample+".cns"]
 
 
 ############
