@@ -156,5 +156,5 @@
 				"ENS" : "/data/Clinomics/Ref/khanlab/AnnotationRDS/annotation_ENSEMBL_transcript.RDS",
 				"UCSC": "/data/Clinomics/Ref/khanlab/AnnotationRDS/annotation_UCSC_transcript.RDS"
 	},
-	"krakendb"		: "/fdb/kraken/standard"
+	"krakendb"		: "/fdb/kraken/20170202_bacteria"
 }
