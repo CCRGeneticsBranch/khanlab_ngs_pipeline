@@ -62,7 +62,8 @@
 		"job_mixcr"      : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=06:00:00 --mem=20G  --cpus-per-task=32",
 		"job_RNASeQC_star" : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=6:00:00 --mem=40G --cpus-per-task=1  --gres=lscratch:200",
 		"job_RNASeqQC"   : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=6:00:00 --mem=40G  --cpus-per-task=1  --gres=lscratch:150",
-		"job_RNASeqQC1"   : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=40G  --cpus-per-task=1  --gres=lscratch:150"
+		"job_RNASeqQC1"   : "--partition=quick,norm --mail-type=FAIL,TIME_LIMIT_90 --time=4:00:00 --mem=40G  --cpus-per-task=1  --gres=lscratch:150",
+                "job_kraken"     : "--partition=ccr,norm --mail-type=FAIL,TIME_LIMIT_90 --time=6:00:00 --mem=24G --cpus-per-task=24 --gres=lscratch:500"
 	},
 	"login01":{
                 "job_default"    : "--partition=batch  --mem=01G  --cpus-per-task=1  ",
