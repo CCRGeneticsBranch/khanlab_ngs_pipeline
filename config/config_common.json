@@ -59,6 +59,8 @@
 	"bcftools"		: "bcftools/1.13",
 	"Actionable_mutation"	: "Actionable.v3.pl",
 	"Actionable_fusion"	: "ActionableFusion.v1.pl",
+	"kraken"		: "kraken/1.1",
+	"krona"			: "kronatools/2.7",
 	"Panel_List"		: ["clin.snv.v1", "clin.cnv.v2", "clin.snv.v2", "nbl.panel", "seqcapez.rms.v1", "nbl.somatic.panel", "panel_paed_v5_w5.1"],
 	"failed_exon_params": {
 		"wholegenome"		:{"Normal":"5","Tumor":"5"},

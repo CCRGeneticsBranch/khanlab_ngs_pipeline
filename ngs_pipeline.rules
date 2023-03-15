@@ -293,6 +293,7 @@ include: NGS_PIPELINE +"/ruleBook/mutationBurden.rules"
 include: NGS_PIPELINE +"/ruleBook/AttachAnnotationFull.rules"
 include: NGS_PIPELINE +"/ruleBook/Arriba.rules"
 include: NGS_PIPELINE +"/ruleBook/TcellExtrect.rules"
+include: NGS_PIPELINE +"/ruleBook/contamination.rules"
 ###########################################################################
 # we have to do it this way as some samples may not have rna or tumor     #
 ###########################################################################
@@ -429,7 +430,9 @@ rule MergeFQ:
 #	FASTQC
 ############
 rule FASTQC:
-	input: R=lambda wildcards: FQ[wildcards.sample]
+	input: 
+		R1="{base}/{TIME}/FQ/{sample}_R1.fastq.gz",
+                R2="{base}/{TIME}/FQ/{sample}_R2.fastq.gz"
 	output:
 		"{base}/{TIME}/{sample}/qc/fastqc/{sample}_R1_fastqc.html",
 		"{base}/{TIME}/{sample}/qc/fastqc/{sample}_R2_fastqc.html"
@@ -439,19 +442,12 @@ rule FASTQC:
 		batch     = config[config['host']]["job_fastqc"]
 	shell: """
 	#######################
-	R1=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R1"`
-	R2=`echo "{input.R}" |sed -e 's/ /\\n/g' |grep "_R2"`
+	echo "Working on ${input.R1}"
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} {input.R1}
 
-	echo "Working on ${{R1}}"
-	zcat ${{R1}} |fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} /dev/stdin
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.html {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc.html
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc      {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.zip  {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R1_fastqc.zip
-	echo "Working on ${{R2}}"
-	zcat ${{R2}} |fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} /dev/stdin
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.html {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc.html
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc      {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc
-	mv {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/stdin_fastqc.zip  {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/{wildcards.sample}_R2_fastqc.zip
+	echo "Working on ${input.R2}"
+        fastqc --extract -t ${{THREADS}} -o {wildcards.base}/{TIME}/{wildcards.sample}/qc/fastqc/ -d ${{LOCAL}} {input.R2}
+
 	#######################
 	"""
 
