@@ -165,7 +165,7 @@ rule Strandedness:
 		work_dir     = WORK_DIR,
 	shell: """
 	################################
-	singularity exec -e --bind {params.work_dir},{params.clinomics_home} {params.image_file} ngsderive strandedness -g {params.gz_gtf} {params.work_dir}{input.bam} > {params.work_dir}{output}
+	singularity exec -e --bind {params.work_dir},{params.clinomics_home} {params.image_file} ngsderive strandedness -g {params.gz_gtf} {params.work_dir}{input.bam} -n 10000 > {params.work_dir}{output}
 	################################
 	"""
 
