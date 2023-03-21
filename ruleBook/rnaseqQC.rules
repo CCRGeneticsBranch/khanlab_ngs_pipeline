@@ -6,6 +6,7 @@ rule RNASeqQC:
 		bai="{base}/{TIME}/{sample}/{sample}.star.bam.bai",
 		rna_interval=config['rRNA_interval'],
 		ref_flat=config['ref_flat'],
+		strandedness="{base}/{TIME}/{sample}/qc/{sample}_strandedness.txt"
 	output:
 		table="{base}/{TIME}/{sample}/qc/{sample}.RnaSeqMetrics.txt",
 		pdf="{base}/{TIME}/{sample}/qc/{sample}.RnaSeqMetrics.pdf",
@@ -15,9 +16,13 @@ rule RNASeqQC:
 	params:
 		rulename  = "RNASeqQC",
 		batch     = config[config['host']]["job_RNASeqQC"],
+		home      = WORK_DIR,
+		converter = NGS_PIPELINE+ "/scripts/strandedness.py"
 	shell: """
 	#######################
-	java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $PICARD_JAR CollectRnaSeqMetrics STRAND_SPECIFICITY=NONE VALIDATION_STRINGENCY=SILENT REF_FLAT={input.ref_flat} RIBOSOMAL_INTERVALS={input.rna_interval} INPUT={input.bam} OUTPUT={output.table} CHART_OUTPUT={output.pdf}
+	STRAND=`{params.converter} {params.home}{input.strandedness} picard`
+	echo "strand is : ${{STRAND}}"
+	java -Xmx${{MEM}}g -Djava.io.tmpdir=${{LOCAL}} -jar $PICARD_JAR CollectRnaSeqMetrics STRAND_SPECIFICITY=${{STRAND}} VALIDATION_STRINGENCY=SILENT REF_FLAT={input.ref_flat} RIBOSOMAL_INTERVALS={input.rna_interval} INPUT={input.bam} OUTPUT={output.table} CHART_OUTPUT={output.pdf}
 	#######################
 	"""
 rule RNASeqQC1:
