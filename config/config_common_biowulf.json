@@ -26,6 +26,7 @@
 	"HLA"			: "/data/Clinomics/Ref/khanlab/HLA/",
 	"fusion_annotation"	: "/data/khanlab/projects/Fusion_tool_HC/fusion_tools_v1.sif",
 	"clinomics_home"	: "/data/Clinomics/",
+	"khanlab_home"		: "/data/khanlab/",
 	"ngsderive"		: "/data/Clinomics/Tools/singularity/nciccbr-ccbr_ngsderive-v1.0.img",
 	"gz_gtf"		: "/data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/gencode.v37lift37.annotation_ERCC92.sorted.gtf.gz",
 	"FA_path"		: "/data/khanlab/projects/ngs_pipeline_testing/References_4.0/New_GRCh37/",
