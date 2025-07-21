@@ -1,3 +1,6 @@
+> ⚠️ **This repository is no longer maintained and has been archived for reference purposes only..**⚠️
+> 
+> For the latest updates and active development, please visit [Oncogenomics_NF_WF](https://github.com/CCRGeneticsBranch/Oncogenomics_NF_WF).
 
 
 ## Introduction
@@ -14,9 +17,6 @@ Bioinformatics Tools Listed in [config files](config/config_common.json)
 ### Following R Packages
 - [OmicCircos](https://www.bioconductor.org/packages/release/bioc/html/OmicCircos.html)
 - [RColorBrewer](https://cran.r-project.org/web/packages/RColorBrewer/index.html)
-- [Rsubread](https://bioconductor.org/packages/release/bioc/html/Rsubread.html)
-- [edgeR](http://bioconductor.org/packages/release/bioc/html/edgeR.html)
-- [limma](http://bioconductor.org/packages/release/bioc/html/limma.html)
 - [optparse](https://cran.r-project.org/web/packages/optparse/index.html)
 - [pracma](https://cran.r-project.org/web/packages/pracma/index.html)
 - [sequenza](https://cran.r-project.org/web/packages/sequenza/index.html)
@@ -32,10 +32,10 @@ Bioinformatics Tools Listed in [config files](config/config_common.json)
 
 ### DNASeq:
 - QC
-- BWA, Novoalign  
+- BWA
 - Broad Standard Practices on bwa bam  
-- Haplotype Caller, Platupys, Bam2MPG, MuTect, Strelka  
-- snpEff, Annovar, SIFT, pph2, Custom Annotation  
+- Haplotype Caller, Bam2MPG, MuTect, Strelka  
+- snpEff, Annovar, SIFT, Custom Annotation  
 - Coverage Plot, Circos Plot, Hotspot Coverage Box Plot  
 - Create input format for oncogenomics database (Patient Level)  
 - Make Actionable Classification for Germline and Somatic Mutations   
@@ -54,13 +54,12 @@ Bioinformatics Tools Listed in [config files](config/config_common.json)
 
 
 ### RNASeq:
-- 
 - Mapping - STAR
-- Variant analysis - GATK
+- Bam processing - GATK 
 - Fusion calling - fusion-catcher, Arriba, STAR-fusion
 - Gene expression - RSEM
 - Haplotype Caller
-- snpEff, Annovar, SIFT, pph2, Custom Annotation
+- snpEff, Annovar, SIFT, Custom Annotation
 - Actionable Fusion classification
 
 ### Patient:
